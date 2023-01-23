@@ -1,0 +1,7 @@
+.game-wrapper {
+  width: 480px;
+  padding: 0 0 35px;
+  margin: 0 auto;
+  position: relative;
+  text-align: center;
+}
