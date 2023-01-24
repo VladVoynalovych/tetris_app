@@ -1,7 +1,7 @@
 const FIGURE_ALPHABET = ['I', 'O', 'T', 'J', 'L', 'S', 'Z'] as const;
 type FigureLetter = (typeof FIGURE_ALPHABET)[number];
 
-type Figure = {
+export type Figure = {
   coords: {
     x: number;
     y: number;
@@ -14,7 +14,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
   I: {
     coords: {
       x: 3,
-      y: 0,
+      y: -2,
     },
     isFixed: false,
     blocks: [[1, 1, 1, 1]],
@@ -22,7 +22,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
   O: {
     coords: {
       x: 4,
-      y: 0,
+      y: -2,
     },
     isFixed: false,
     blocks: [
@@ -33,7 +33,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
   T: {
     coords: {
       x: 4,
-      y: 0,
+      y: -2,
     },
     isFixed: false,
     blocks: [
@@ -44,7 +44,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
   J: {
     coords: {
       x: 4,
-      y: 0,
+      y: -2,
     },
     isFixed: false,
     blocks: [
@@ -55,7 +55,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
   L: {
     coords: {
       x: 4,
-      y: 0,
+      y: -2,
     },
     isFixed: false,
     blocks: [
@@ -66,7 +66,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
   S: {
     coords: {
       x: 4,
-      y: 0,
+      y: -2,
     },
     isFixed: false,
     blocks: [
@@ -77,7 +77,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
   Z: {
     coords: {
       x: 4,
-      y: 0,
+      y: -2,
     },
     isFixed: false,
     blocks: [
