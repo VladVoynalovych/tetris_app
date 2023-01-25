@@ -1,7 +1,7 @@
 import './index.css';
 import React, { useEffect, useState } from 'react';
 import { Figure, getRandomFigure } from '../../Extensions/FigueGenerator';
-import { moveFigureDown, moveFigureRight, moveFigureLeft } from '../../Controller/MoveController';
+import { moveFigureDown, moveFigureRight, moveFigureLeft, rotateFigure } from '../../Controller/MoveController';
 
 const emptyPlayground = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -45,6 +45,8 @@ export const Playground = () => {
         setFigure(movedFigure);
         break;
       case 'ArrowUp':
+        movedFigure = rotateFigure(figure);
+        setFigure(movedFigure);
         break;
     }
   };

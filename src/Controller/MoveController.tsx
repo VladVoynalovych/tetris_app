@@ -12,4 +12,18 @@ export const moveFigureDown = (figure: Figure) => {
   return { ...figure, coords: { y: figure.coords.y + 1, x: figure.coords.x } };
 };
 
-export {};
+export const rotateFigure = (figure: Figure) => {
+  const rotatedFigure = { ...figure };
+  const { rotationIndex } = figure;
+  const rotationsLength = figure.rotations.length - 1;
+
+  if (rotationIndex < rotationsLength) {
+    rotatedFigure.rotationIndex += 1;
+  } else {
+    rotatedFigure.rotationIndex = 0;
+  }
+  console.log(rotatedFigure);
+  rotatedFigure.blocks = rotatedFigure.rotations[rotatedFigure.rotationIndex];
+
+  return rotatedFigure;
+};

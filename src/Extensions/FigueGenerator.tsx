@@ -8,6 +8,8 @@ export type Figure = {
   };
   isFixed: boolean;
   blocks: readonly (readonly number[])[];
+  rotations: readonly (readonly (readonly number[])[])[];
+  rotationIndex: number;
 };
 
 const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
@@ -17,7 +19,24 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
       y: -2,
     },
     isFixed: false,
-    blocks: [[1, 1, 1, 1]],
+    rotationIndex: 0,
+    get blocks() {
+      return this.rotations[this.rotationIndex];
+    },
+    rotations: [
+      [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [1, 1, 1, 1],
+        [0, 0, 0, 0],
+      ],
+      [
+        [0, 1, 0, 0],
+        [0, 1, 0, 0],
+        [0, 1, 0, 0],
+        [0, 1, 0, 0],
+      ],
+    ],
   },
   O: {
     coords: {
@@ -25,9 +44,15 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
       y: -2,
     },
     isFixed: false,
-    blocks: [
-      [1, 1],
-      [1, 1],
+    rotationIndex: 0,
+    get blocks() {
+      return this.rotations[this.rotationIndex];
+    },
+    rotations: [
+      [
+        [1, 1],
+        [1, 1],
+      ],
     ],
   },
   T: {
@@ -36,9 +61,31 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
       y: -2,
     },
     isFixed: false,
-    blocks: [
-      [0, 1, 0],
-      [1, 1, 1],
+    rotationIndex: 0,
+    get blocks() {
+      return this.rotations[this.rotationIndex];
+    },
+    rotations: [
+      [
+        [0, 1, 0],
+        [1, 1, 1],
+        [0, 0, 0],
+      ],
+      [
+        [0, 1, 0],
+        [0, 1, 1],
+        [0, 1, 0],
+      ],
+      [
+        [0, 0, 0],
+        [1, 1, 1],
+        [0, 1, 0],
+      ],
+      [
+        [0, 1, 0],
+        [1, 1, 0],
+        [0, 1, 0],
+      ],
     ],
   },
   J: {
@@ -47,9 +94,31 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
       y: -2,
     },
     isFixed: false,
-    blocks: [
-      [0, 0, 1],
-      [1, 1, 1],
+    rotationIndex: 0,
+    get blocks() {
+      return this.rotations[this.rotationIndex];
+    },
+    rotations: [
+      [
+        [1, 0, 0],
+        [1, 1, 1],
+        [0, 0, 0],
+      ],
+      [
+        [0, 1, 1],
+        [0, 1, 0],
+        [0, 1, 0],
+      ],
+      [
+        [0, 0, 0],
+        [1, 1, 1],
+        [0, 0, 1],
+      ],
+      [
+        [0, 1, 0],
+        [0, 1, 0],
+        [1, 1, 0],
+      ],
     ],
   },
   L: {
@@ -58,9 +127,31 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
       y: -2,
     },
     isFixed: false,
-    blocks: [
-      [1, 0, 0],
-      [1, 1, 1],
+    rotationIndex: 0,
+    get blocks() {
+      return this.rotations[this.rotationIndex];
+    },
+    rotations: [
+      [
+        [0, 0, 1],
+        [1, 1, 1],
+        [0, 0, 0],
+      ],
+      [
+        [0, 1, 0],
+        [0, 1, 0],
+        [0, 1, 1],
+      ],
+      [
+        [0, 0, 0],
+        [1, 1, 1],
+        [1, 0, 0],
+      ],
+      [
+        [1, 1, 0],
+        [0, 1, 0],
+        [0, 1, 0],
+      ],
     ],
   },
   S: {
@@ -69,9 +160,21 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
       y: -2,
     },
     isFixed: false,
-    blocks: [
-      [0, 1, 1],
-      [1, 1, 0],
+    rotationIndex: 0,
+    get blocks() {
+      return this.rotations[this.rotationIndex];
+    },
+    rotations: [
+      [
+        [0, 0, 0],
+        [0, 1, 1],
+        [1, 1, 0],
+      ],
+      [
+        [1, 0, 0],
+        [1, 1, 0],
+        [0, 1, 0],
+      ],
     ],
   },
   Z: {
@@ -80,9 +183,21 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
       y: -2,
     },
     isFixed: false,
-    blocks: [
-      [1, 1, 0],
-      [0, 1, 1],
+    rotationIndex: 0,
+    get blocks() {
+      return this.rotations[this.rotationIndex];
+    },
+    rotations: [
+      [
+        [0, 0, 0],
+        [1, 1, 0],
+        [0, 1, 1],
+      ],
+      [
+        [0, 0, 1],
+        [0, 1, 1],
+        [0, 1, 0],
+      ],
     ],
   },
 } as const;
