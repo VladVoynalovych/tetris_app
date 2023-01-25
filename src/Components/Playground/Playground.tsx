@@ -1,7 +1,13 @@
 import './index.css';
 import React, { useEffect, useState } from 'react';
 import { Figure, getRandomFigure } from '../../Extensions/FigueGenerator';
-import { moveFigureDown, moveFigureRight, moveFigureLeft, rotateFigure } from '../../Controller/MoveController';
+import {
+  moveFigureDown,
+  moveFigureRight,
+  moveFigureLeft,
+  rotateFigure,
+  checkCollision,
+} from '../../Controller/MoveController';
 
 const emptyPlayground = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -33,16 +39,22 @@ export const Playground = () => {
     let movedFigure: Figure;
     switch (buttonKey) {
       case 'ArrowDown':
-        movedFigure = moveFigureDown(figure);
-        setFigure(movedFigure);
+        if (checkCollision(playground, figure) !== 'bottom') {
+          movedFigure = moveFigureDown(figure);
+          setFigure(movedFigure);
+        }
         break;
       case 'ArrowRight':
-        movedFigure = moveFigureRight(figure);
-        setFigure(movedFigure);
+        if (checkCollision(playground, figure) !== 'right') {
+          movedFigure = moveFigureRight(figure);
+          setFigure(movedFigure);
+        }
         break;
       case 'ArrowLeft':
-        movedFigure = moveFigureLeft(figure);
-        setFigure(movedFigure);
+        if (checkCollision(playground, figure) !== 'left') {
+          movedFigure = moveFigureLeft(figure);
+          setFigure(movedFigure);
+        }
         break;
       case 'ArrowUp':
         movedFigure = rotateFigure(figure);
