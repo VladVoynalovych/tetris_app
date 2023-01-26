@@ -30,24 +30,21 @@ export const rotateFigure = (figure: Figure) => {
 };
 
 export const checkCollision = (gameboard: Gameboard, figure: Figure) => {
-  let {
-    coords: { x, y },
-  } = figure;
-  y = y < 0 ? 0 : y;
-
-  for (let row = y; row < figure.blocks.length; row++) {
-    for (let col = x; col < figure.blocks[row].length + x; col++) {
-      console.log(gameboard[row + 1][col], 'here:', row + 1);
-
-      if (gameboard[row][col - 1] === undefined || gameboard[row][col - 1] === 1) {
-        return 'left';
-      }
-      if (gameboard[row][col + 1] === undefined || gameboard[row][col + 1] === 1) {
-        return 'right';
+  for (let row = 0; row < gameboard.length; row++) {
+    for (let col = 0; col < gameboard[row].length; col++) {
+      if (
+        (gameboard[row][col] === 1 && figure.blocks[row - figure.coords.y]?.[col - figure.coords.x] === 1) ||
+        figure.coords.x < 0 ||
+        figure.coords.x + figure.blocks[0].length > gameboard[0].length
+      ) {
+        return 'side';
       }
 
-      if (gameboard[row + 1][col] === undefined || gameboard[row + 1][col] === 1) {
-        console.log(gameboard[row + 1][col]);
+      if (
+        (gameboard[row][col] === 1 && figure.blocks[row - figure.coords.y]?.[col - figure.coords.x] === 1) ||
+        (figure.coords.y + figure.blocks.length >= gameboard.length &&
+          figure.blocks[row - figure.coords.y - 1]?.[col - figure.coords.x] === undefined)
+      ) {
         return 'bottom';
       }
     }

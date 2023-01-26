@@ -1,6 +1,6 @@
 import './index.css';
 import React, { useEffect, useState } from 'react';
-import { Figure, getRandomFigure } from '../../Extensions/FigueGenerator';
+import { getRandomFigure } from '../../Extensions/FigueGenerator';
 import {
   moveFigureDown,
   moveFigureRight,
@@ -10,10 +10,10 @@ import {
 } from '../../Controller/MoveController';
 
 const emptyPlayground = [
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 1, 0, 0, 0, 0, 1, 0, 0],
+  [0, 0, 1, 0, 0, 0, 0, 1, 0, 0],
+  [0, 0, 1, 0, 0, 0, 0, 1, 0, 0],
+  [0, 0, 1, 0, 0, 0, 0, 1, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -33,32 +33,24 @@ const emptyPlayground = [
 ];
 export const Playground = () => {
   const handleKeyPress = (e: KeyboardEvent) => {
-    const buttonKey = e.code;
-    console.log(e.code);
-
-    let movedFigure: Figure;
-    switch (buttonKey) {
+    switch (e.code) {
       case 'ArrowDown':
         if (checkCollision(playground, figure) !== 'bottom') {
-          movedFigure = moveFigureDown(figure);
-          setFigure(movedFigure);
+          setFigure(moveFigureDown(figure));
         }
         break;
       case 'ArrowRight':
-        if (checkCollision(playground, figure) !== 'right') {
-          movedFigure = moveFigureRight(figure);
-          setFigure(movedFigure);
+        if (checkCollision(playground, moveFigureRight(figure)) !== 'side') {
+          setFigure(moveFigureRight(figure));
         }
         break;
       case 'ArrowLeft':
-        if (checkCollision(playground, figure) !== 'left') {
-          movedFigure = moveFigureLeft(figure);
-          setFigure(movedFigure);
+        if (checkCollision(playground, moveFigureLeft(figure)) !== 'side') {
+          setFigure(moveFigureLeft(figure));
         }
         break;
       case 'ArrowUp':
-        movedFigure = rotateFigure(figure);
-        setFigure(movedFigure);
+        setFigure(rotateFigure(figure));
         break;
     }
   };
