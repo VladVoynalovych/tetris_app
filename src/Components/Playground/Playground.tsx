@@ -1,6 +1,6 @@
 import './index.css';
 import React, { useEffect, useState } from 'react';
-import { getRandomFigure } from '../../Extensions/FigueGenerator';
+import { getRandomFigure, setupFigure } from '../../Extensions/FigureGenerator';
 import {
   moveFigureDown,
   moveFigureRight,
@@ -10,10 +10,10 @@ import {
 } from '../../Controller/MoveController';
 
 const emptyPlayground = [
-  [0, 0, 1, 0, 0, 0, 0, 1, 0, 0],
-  [0, 0, 1, 0, 0, 0, 0, 1, 0, 0],
-  [0, 0, 1, 0, 0, 0, 0, 1, 0, 0],
-  [0, 0, 1, 0, 0, 0, 0, 1, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -31,26 +31,31 @@ const emptyPlayground = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ];
+
 export const Playground = () => {
   const handleKeyPress = (e: KeyboardEvent) => {
     switch (e.code) {
       case 'ArrowDown':
-        if (checkCollision(playground, figure) !== 'bottom') {
+        if (!checkCollision(playground, moveFigureDown(figure))) {
           setFigure(moveFigureDown(figure));
+        } else {
+          setPlayground(setupFigure(playground, figure));
         }
         break;
       case 'ArrowRight':
-        if (checkCollision(playground, moveFigureRight(figure)) !== 'side') {
+        if (!checkCollision(playground, moveFigureRight(figure))) {
           setFigure(moveFigureRight(figure));
         }
         break;
       case 'ArrowLeft':
-        if (checkCollision(playground, moveFigureLeft(figure)) !== 'side') {
+        if (!checkCollision(playground, moveFigureLeft(figure))) {
           setFigure(moveFigureLeft(figure));
         }
         break;
       case 'ArrowUp':
-        setFigure(rotateFigure(figure));
+        if (!checkCollision(playground, rotateFigure(figure))) {
+          setFigure(rotateFigure(figure));
+        }
         break;
     }
   };
@@ -59,7 +64,7 @@ export const Playground = () => {
     window.onkeydown = handleKeyPress;
   });
 
-  const [playground] = useState(emptyPlayground);
+  const [playground, setPlayground] = useState(emptyPlayground);
   const [figure, setFigure] = useState(getRandomFigure());
 
   return (

@@ -1,3 +1,5 @@
+import { PLAYGROUND_WIDTH, PLAYGROUND_HEIGHT } from '../utils/Constants';
+
 const FIGURE_ALPHABET = ['I', 'O', 'T', 'J', 'L', 'S', 'Z'] as const;
 type FigureLetter = (typeof FIGURE_ALPHABET)[number];
 
@@ -16,7 +18,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
   I: {
     coords: {
       x: 3,
-      y: -2,
+      y: -1,
     },
     isFixed: false,
     rotationIndex: 0,
@@ -41,7 +43,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
   O: {
     coords: {
       x: 4,
-      y: -2,
+      y: -1,
     },
     isFixed: false,
     rotationIndex: 0,
@@ -58,7 +60,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
   T: {
     coords: {
       x: 4,
-      y: -2,
+      y: -1,
     },
     isFixed: false,
     rotationIndex: 0,
@@ -91,7 +93,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
   J: {
     coords: {
       x: 4,
-      y: -2,
+      y: -1,
     },
     isFixed: false,
     rotationIndex: 0,
@@ -124,7 +126,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
   L: {
     coords: {
       x: 4,
-      y: -2,
+      y: -1,
     },
     isFixed: false,
     rotationIndex: 0,
@@ -157,7 +159,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
   S: {
     coords: {
       x: 4,
-      y: -2,
+      y: -1,
     },
     isFixed: false,
     rotationIndex: 0,
@@ -180,7 +182,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
   Z: {
     coords: {
       x: 4,
-      y: -2,
+      y: -1,
     },
     isFixed: false,
     rotationIndex: 0,
@@ -212,14 +214,30 @@ export const getRandomFigure = () => {
   return FIGURES[figureSymbol];
 };
 
+const copyGameBoard = (gameBoard: number[][]) => {
+  let updatedGameBoard: number[][] = [];
+
+  for (let row = 0; row < PLAYGROUND_HEIGHT; row++) {
+    let gameBoardRow = [];
+    for (let col = 0; col < PLAYGROUND_WIDTH; col++) {
+      gameBoardRow.push(gameBoard[row][col]);
+    }
+    updatedGameBoard.push(gameBoardRow);
+  }
+
+  return updatedGameBoard;
+};
+
 export const setupFigure = (gameBoard: number[][], figure: Figure) => {
-  let updatedGameBoard = gameBoard.slice();
-  let {
-    coords: { x, y },
-  } = figure;
-  for (let row = y; row < figure.blocks.length; row++) {
-    for (let col = x; col < figure.blocks[y].length + x; col++) {
-      updatedGameBoard[row][col] = figure.blocks[row - y][col - x];
+  let updatedGameBoard = copyGameBoard(gameBoard);
+
+  for (let row = 0; row < PLAYGROUND_HEIGHT; row++) {
+    for (let col = 0; col <= PLAYGROUND_WIDTH; col++) {
+      if (updatedGameBoard[row][col] !== 1) {
+        if (figure.blocks[row - figure.coords.y]?.[col - figure.coords.x] === 1) {
+          updatedGameBoard[row][col] = 1;
+        }
+      }
     }
   }
 

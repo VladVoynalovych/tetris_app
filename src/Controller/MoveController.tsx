@@ -1,5 +1,6 @@
-import { Figure } from '../Extensions/FigueGenerator';
+import { Figure } from '../Extensions/FigureGenerator';
 import { Gameboard } from '../Components/Playground/Types';
+import { PLAYGROUND_HEIGHT, PLAYGROUND_WIDTH } from '../utils/Constants';
 
 export const moveFigureLeft = (figure: Figure) => {
   return { ...figure, coords: { x: figure.coords.x - 1, y: figure.coords.y } };
@@ -30,23 +31,16 @@ export const rotateFigure = (figure: Figure) => {
 };
 
 export const checkCollision = (gameboard: Gameboard, figure: Figure) => {
-  for (let row = 0; row < gameboard.length; row++) {
-    for (let col = 0; col < gameboard[row].length; col++) {
+  for (let row = 0; row < PLAYGROUND_HEIGHT + 1; row++) {
+    for (let col = -1; col <= PLAYGROUND_WIDTH; col++) {
       if (
-        (gameboard[row][col] === 1 && figure.blocks[row - figure.coords.y]?.[col - figure.coords.x] === 1) ||
-        figure.coords.x < 0 ||
-        figure.coords.x + figure.blocks[0].length > gameboard[0].length
+        (gameboard[row]?.[col] === 1 && figure.blocks[row - figure.coords.y]?.[col - figure.coords.x] === 1) ||
+        (gameboard[row] === undefined && figure.blocks[row - figure.coords.y]?.[col - figure.coords.x] === 1) ||
+        (gameboard[row]?.[col] === undefined && figure.blocks[row - figure.coords.y]?.[col - figure.coords.x] === 1)
       ) {
-        return 'side';
-      }
-
-      if (
-        (gameboard[row][col] === 1 && figure.blocks[row - figure.coords.y]?.[col - figure.coords.x] === 1) ||
-        (figure.coords.y + figure.blocks.length >= gameboard.length &&
-          figure.blocks[row - figure.coords.y - 1]?.[col - figure.coords.x] === undefined)
-      ) {
-        return 'bottom';
+        return true;
       }
     }
   }
+  return false;
 };
