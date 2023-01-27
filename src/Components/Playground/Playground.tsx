@@ -27,32 +27,27 @@ const emptyPlayground = [
 ];
 export const Playground = () => {
   const handleKeyPress = (e: KeyboardEvent) => {
-    const buttonKey = e.code;
-    console.log(e.code);
-
-    let movedFigure: Figure;
-    switch (buttonKey) {
+    switch (e.code) {
       case 'ArrowDown':
-        movedFigure = moveFigureDown(figure);
-        setFigure(movedFigure);
+        setFigure(moveFigureDown(figure));
         break;
       case 'ArrowRight':
-        movedFigure = moveFigureRight(figure);
-        setFigure(movedFigure);
+        setFigure(moveFigureRight(figure));
         break;
       case 'ArrowLeft':
-        movedFigure = moveFigureLeft(figure);
-        setFigure(movedFigure);
+        setFigure(moveFigureLeft(figure));
         break;
       case 'ArrowUp':
-        movedFigure = rotateFigure(figure);
-        setFigure(movedFigure);
+        setFigure(rotateFigure(figure));
         break;
     }
   };
 
   useEffect(() => {
     window.onkeydown = handleKeyPress;
+    return () => {
+      window.onkeydown = null;
+    };
   });
 
   const [playground] = useState(emptyPlayground);
