@@ -24,7 +24,6 @@ export const rotateFigure = (figure: Figure) => {
   } else {
     rotatedFigure.rotationIndex = 0;
   }
-  console.log(rotatedFigure);
   rotatedFigure.blocks = rotatedFigure.rotations[rotatedFigure.rotationIndex];
 
   return rotatedFigure;
