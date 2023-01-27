@@ -1,6 +1,6 @@
 import './index.css';
 import React, { useEffect, useState } from 'react';
-import { Figure, getRandomFigure } from '../../Extensions/FigueGenerator';
+import { getRandomFigure } from '../../Extensions/FigueGenerator';
 import { moveFigureDown, moveFigureRight, moveFigureLeft, rotateFigure } from '../../Controller/MoveController';
 
 const emptyPlayground = [
