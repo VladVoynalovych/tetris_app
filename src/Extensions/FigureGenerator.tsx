@@ -215,17 +215,7 @@ export const getRandomFigure = () => {
 };
 
 const copyGameBoard = (gameBoard: number[][]) => {
-  let updatedGameBoard: number[][] = [];
-
-  for (let row = 0; row < PLAYGROUND_HEIGHT; row++) {
-    let gameBoardRow = [];
-    for (let col = 0; col < PLAYGROUND_WIDTH; col++) {
-      gameBoardRow.push(gameBoard[row][col]);
-    }
-    updatedGameBoard.push(gameBoardRow);
-  }
-
-  return updatedGameBoard;
+  return gameBoard.map((row) => [...row]);
 };
 
 export const setupFigure = (gameBoard: number[][], figure: Figure) => {
@@ -244,19 +234,16 @@ export const setupFigure = (gameBoard: number[][], figure: Figure) => {
   return updatedGameBoard;
 };
 
-const findFilledRow = (gameBoard: number[][]) => {
-  return gameBoard.findIndex((item, index) => {
-    return item.every((cell) => cell === 1);
-  });
+const isRowFilled = (row: number[]) => {
+  return row.every((cell) => cell === 1);
 };
 
 export const deleteFilledRows = (gameBoard: number[][]) => {
   let updatedGameBoard = copyGameBoard(gameBoard);
 
   for (let row = 0; row < PLAYGROUND_HEIGHT; row++) {
-    let index = findFilledRow(updatedGameBoard);
-    if (index !== -1) {
-      updatedGameBoard.splice(index, 1);
+    if (isRowFilled(gameBoard[row])) {
+      updatedGameBoard.splice(row, 1);
       updatedGameBoard.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     }
   }

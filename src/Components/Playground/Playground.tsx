@@ -51,6 +51,7 @@ export const Playground = () => {
       clearInterval(gameLoopId);
     };
   }, [figure, playground]);
+
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       switch (e.code) {
