@@ -26,29 +26,29 @@ const emptyPlayground = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ];
 export const Playground = () => {
-  const handleKeyPress = (e: KeyboardEvent) => {
-    switch (e.code) {
-      case 'ArrowDown':
-        setFigure(moveFigureDown(figure));
-        break;
-      case 'ArrowRight':
-        setFigure(moveFigureRight(figure));
-        break;
-      case 'ArrowLeft':
-        setFigure(moveFigureLeft(figure));
-        break;
-      case 'ArrowUp':
-        setFigure(rotateFigure(figure));
-        break;
-    }
-  };
-
   useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      switch (e.code) {
+        case 'ArrowDown':
+          setFigure((prevState) => moveFigureDown(prevState));
+          break;
+        case 'ArrowRight':
+          setFigure((prevState) => moveFigureRight(prevState));
+          break;
+        case 'ArrowLeft':
+          setFigure((prevState) => moveFigureLeft(prevState));
+          break;
+        case 'ArrowUp':
+          setFigure((prevState) => rotateFigure(prevState));
+          break;
+      }
+    };
+
     window.addEventListener('keydown', handleKeyPress);
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
     };
-  });
+  }, []);
 
   const [playground] = useState(emptyPlayground);
   const [figure, setFigure] = useState(getRandomFigure());

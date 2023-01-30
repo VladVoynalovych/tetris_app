@@ -13,8 +13,13 @@ export const moveFigureDown = (figure: Figure) => {
 };
 
 export const rotateFigure = (figure: Figure) => {
+  const rotationIndex = (figure.rotationIndex + 1) % figure.rotations.length;
+
   return {
-    ...figure,
-    rotationIndex: (figure.rotationIndex + 1) % figure.rotations.length,
+    coords: figure.coords,
+    rotations: figure.rotations,
+    isFixed: figure.isFixed,
+    blocks: figure.rotations[rotationIndex],
+    rotationIndex,
   };
 };
