@@ -15,18 +15,15 @@ export const moveFigureDown = (figure: Figure) => {
 };
 
 export const rotateFigure = (figure: Figure) => {
-  const rotatedFigure = { ...figure };
-  const { rotationIndex } = figure;
-  const rotationsLength = figure.rotations.length - 1;
+  const rotationIndex = (figure.rotationIndex + 1) % figure.rotations.length;
 
-  if (rotationIndex < rotationsLength) {
-    rotatedFigure.rotationIndex += 1;
-  } else {
-    rotatedFigure.rotationIndex = 0;
-  }
-  rotatedFigure.blocks = rotatedFigure.rotations[rotatedFigure.rotationIndex];
-
-  return rotatedFigure;
+  return {
+    coords: figure.coords,
+    rotations: figure.rotations,
+    isFixed: figure.isFixed,
+    blocks: figure.rotations[rotationIndex],
+    rotationIndex,
+  };
 };
 
 export const checkCollision = (gameboard: Gameboard, figure: Figure) => {
