@@ -1,7 +1,7 @@
+import { PLAYGROUND_WIDTH, PLAYGROUND_HEIGHT } from '../utils/Constants';
+
 const FIGURE_ALPHABET = ['I', 'O', 'T', 'J', 'L', 'S', 'Z'] as const;
 type FigureLetter = (typeof FIGURE_ALPHABET)[number];
-
-import { PLAYGROUND_WIDTH, PLAYGROUND_HEIGHT } from '../utils/Constants';
 
 export type Figure = {
   coords: {
@@ -215,17 +215,7 @@ export const getRandomFigure = () => {
 };
 
 const copyGameBoard = (gameBoard: number[][]) => {
-  let updatedGameBoard: number[][] = [];
-
-  for (let row = 0; row < PLAYGROUND_HEIGHT; row++) {
-    let gameBoardRow = [];
-    for (let col = 0; col < PLAYGROUND_WIDTH; col++) {
-      gameBoardRow.push(gameBoard[row][col]);
-    }
-    updatedGameBoard.push(gameBoardRow);
-  }
-
-  return updatedGameBoard;
+  return gameBoard.map((row) => [...row]);
 };
 
 export const setupFigure = (gameBoard: number[][], figure: Figure) => {

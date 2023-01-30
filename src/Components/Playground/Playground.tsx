@@ -44,9 +44,9 @@ export const Playground = () => {
   };
 
   useEffect(() => {
-    window.onkeydown = handleKeyPress;
+    window.addEventListener('keydown', handleKeyPress);
     return () => {
-      window.onkeydown = null;
+      window.removeEventListener('keydown', handleKeyPress);
     };
   });
 
