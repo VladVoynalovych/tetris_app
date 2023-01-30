@@ -1,6 +1,7 @@
 import './index.css';
-import { useState } from 'react';
-import { getRandomFigure } from '../../Extentioons/FigueGenerator';
+import React, { useEffect, useState } from 'react';
+import { getRandomFigure } from '../../Extensions/FigueGenerator';
+import { moveFigureDown, moveFigureRight, moveFigureLeft, rotateFigure } from '../../Controller/MoveController';
 
 const emptyPlayground = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -20,15 +21,37 @@ const emptyPlayground = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 1, 0, 1, 0, 0, 0, 0],
-  [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-  [1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ];
 export const Playground = () => {
-  const [playground] = useState(emptyPlayground);
-  const [figure] = useState(getRandomFigure());
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      switch (e.code) {
+        case 'ArrowDown':
+          setFigure((prevState) => moveFigureDown(prevState));
+          break;
+        case 'ArrowRight':
+          setFigure((prevState) => moveFigureRight(prevState));
+          break;
+        case 'ArrowLeft':
+          setFigure((prevState) => moveFigureLeft(prevState));
+          break;
+        case 'ArrowUp':
+          setFigure((prevState) => rotateFigure(prevState));
+          break;
+      }
+    };
 
-  console.log(figure.coords);
+    window.addEventListener('keydown', handleKeyPress);
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, []);
+
+  const [playground] = useState(emptyPlayground);
+  const [figure, setFigure] = useState(getRandomFigure());
 
   return (
     <div className='playground'>
