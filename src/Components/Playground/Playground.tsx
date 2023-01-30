@@ -38,12 +38,12 @@ export const Playground = () => {
   useEffect(() => {
     const gameLoopId = setInterval(() => {
       if (!checkCollision(playground, moveFigureDown(figure))) {
-        setFigure(moveFigureDown(figure));
+        setFigure(moveFigureDown);
       } else {
         let updatedPlayground = setupFigure(playground, figure);
         updatedPlayground = deleteFilledRows(updatedPlayground);
         setPlayground(updatedPlayground);
-        setFigure(getRandomFigure());
+        setFigure(getRandomFigure);
       }
     }, 500);
 
@@ -61,7 +61,7 @@ export const Playground = () => {
             let updatedPlayground = setupFigure(playground, figure);
             updatedPlayground = deleteFilledRows(updatedPlayground);
             setPlayground(updatedPlayground);
-            setFigure(getRandomFigure());
+            setFigure(getRandomFigure);
           }
           break;
         case 'ArrowRight':
