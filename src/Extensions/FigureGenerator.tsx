@@ -244,7 +244,7 @@ export const deleteFilledRows = (gameBoard: number[][]) => {
   for (let row = 0; row < PLAYGROUND_HEIGHT; row++) {
     if (isRowFilled(gameBoard[row])) {
       updatedGameBoard.splice(row, 1);
-      updatedGameBoard.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+      updatedGameBoard.unshift(new Array(PLAYGROUND_WIDTH).fill(0));
     }
   }
 

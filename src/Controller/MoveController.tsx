@@ -27,8 +27,8 @@ export const rotateFigure = (figure: Figure) => {
 };
 
 export const checkCollision = (gameboard: Gameboard, figure: Figure) => {
-  for (let row = 0; row < PLAYGROUND_HEIGHT + 1; row++) {
-    for (let col = -1; col <= PLAYGROUND_WIDTH; col++) {
+  for (let row = figure.coords.y; row < figure.coords.y + figure.blocks.length + 1; row++) {
+    for (let col = figure.coords.x; col <= figure.coords.x + figure.blocks[0].length; col++) {
       if (
         (gameboard[row]?.[col] === 1 && figure.blocks[row - figure.coords.y]?.[col - figure.coords.x] === 1) ||
         (gameboard[row] === undefined && figure.blocks[row - figure.coords.y]?.[col - figure.coords.x] === 1) ||
