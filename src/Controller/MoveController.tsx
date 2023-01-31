@@ -1,6 +1,5 @@
 import { Figure } from '../Extensions/FigureGenerator';
 import { Gameboard } from '../Components/Playground/Types';
-import { PLAYGROUND_HEIGHT, PLAYGROUND_WIDTH } from '../utils/Constants';
 
 export const moveFigureLeft = (figure: Figure) => {
   return { ...figure, coords: { x: figure.coords.x - 1, y: figure.coords.y } };
