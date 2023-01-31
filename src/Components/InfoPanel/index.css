@@ -1,0 +1,10 @@
+.info-panel {
+  width: 100%;
+  text-align: left;
+  font-size: 10px;
+}
+
+.info-panel > div {
+  margin-left: 30px;
+  margin-bottom: 5px;
+}
