@@ -18,7 +18,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
   I: {
     coords: {
       x: 3,
-      y: -2,
+      y: -1,
     },
     isFixed: false,
     rotationIndex: 0,
@@ -43,7 +43,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
   O: {
     coords: {
       x: 4,
-      y: -2,
+      y: -1,
     },
     isFixed: false,
     rotationIndex: 0,
@@ -60,7 +60,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
   T: {
     coords: {
       x: 4,
-      y: -2,
+      y: -1,
     },
     isFixed: false,
     rotationIndex: 0,
@@ -93,7 +93,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
   J: {
     coords: {
       x: 4,
-      y: -2,
+      y: -1,
     },
     isFixed: false,
     rotationIndex: 0,
@@ -126,7 +126,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
   L: {
     coords: {
       x: 4,
-      y: -2,
+      y: -1,
     },
     isFixed: false,
     rotationIndex: 0,
@@ -159,7 +159,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
   S: {
     coords: {
       x: 4,
-      y: -2,
+      y: -1,
     },
     isFixed: false,
     rotationIndex: 0,
@@ -182,7 +182,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
   Z: {
     coords: {
       x: 4,
-      y: -2,
+      y: -1,
     },
     isFixed: false,
     rotationIndex: 0,
@@ -228,6 +228,23 @@ export const setupFigure = (gameBoard: number[][], figure: Figure) => {
           updatedGameBoard[row][col] = 1;
         }
       }
+    }
+  }
+
+  return updatedGameBoard;
+};
+
+const isRowFilled = (row: number[]) => {
+  return row.every((cell) => cell === 1);
+};
+
+export const deleteFilledRows = (gameBoard: number[][]) => {
+  let updatedGameBoard = copyGameBoard(gameBoard);
+
+  for (let row = 0; row < PLAYGROUND_HEIGHT; row++) {
+    if (isRowFilled(gameBoard[row])) {
+      updatedGameBoard.splice(row, 1);
+      updatedGameBoard.unshift(new Array(PLAYGROUND_WIDTH).fill(0));
     }
   }
 

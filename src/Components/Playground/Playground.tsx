@@ -1,7 +1,13 @@
 import './index.css';
-import React, { useEffect, useState } from 'react';
-import { getRandomFigure } from '../../Extensions/FigueGenerator';
-import { moveFigureDown, moveFigureRight, moveFigureLeft, rotateFigure } from '../../Controller/MoveController';
+import React, { useCallback, useEffect, useState } from 'react';
+import { deleteFilledRows, getRandomFigure, setupFigure } from '../../Extensions/FigureGenerator';
+import {
+  moveFigureDown,
+  moveFigureRight,
+  moveFigureLeft,
+  rotateFigure,
+  checkCollision,
+} from '../../Controller/MoveController';
 
 const emptyPlayground = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -26,20 +32,48 @@ const emptyPlayground = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ];
 export const Playground = () => {
+  const [playground, setPlayground] = useState(emptyPlayground);
+  const [figure, setFigure] = useState(getRandomFigure());
+
+  const moveDown = useCallback(() => {
+    if (!checkCollision(playground, moveFigureDown(figure))) {
+      setFigure(moveFigureDown);
+    } else {
+      let updatedPlayground = setupFigure(playground, figure);
+      updatedPlayground = deleteFilledRows(updatedPlayground);
+      setPlayground(updatedPlayground);
+      setFigure(getRandomFigure);
+    }
+  }, [figure, playground]);
+
+  useEffect(() => {
+    const gameLoopId = setInterval(moveDown, 500);
+
+    return () => {
+      clearInterval(gameLoopId);
+    };
+  }, [figure, playground, moveDown]);
+
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       switch (e.code) {
         case 'ArrowDown':
-          setFigure((prevState) => moveFigureDown(prevState));
+          moveDown();
           break;
         case 'ArrowRight':
-          setFigure((prevState) => moveFigureRight(prevState));
+          if (!checkCollision(playground, moveFigureRight(figure))) {
+            setFigure(moveFigureRight);
+          }
           break;
         case 'ArrowLeft':
-          setFigure((prevState) => moveFigureLeft(prevState));
+          if (!checkCollision(playground, moveFigureLeft(figure))) {
+            setFigure(moveFigureLeft);
+          }
           break;
         case 'ArrowUp':
-          setFigure((prevState) => rotateFigure(prevState));
+          if (!checkCollision(playground, rotateFigure(figure))) {
+            setFigure(rotateFigure);
+          }
           break;
       }
     };
@@ -48,10 +82,7 @@ export const Playground = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
     };
-  }, []);
-
-  const [playground] = useState(emptyPlayground);
-  const [figure, setFigure] = useState(getRandomFigure());
+  }, [figure, playground, moveDown]);
 
   return (
     <div className='playground'>

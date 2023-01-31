@@ -1,4 +1,5 @@
-import { Figure } from '../Extensions/FigueGenerator';
+import { Figure } from '../Extensions/FigureGenerator';
+import { Gameboard } from '../Components/Playground/Types';
 
 export const moveFigureLeft = (figure: Figure) => {
   return { ...figure, coords: { x: figure.coords.x - 1, y: figure.coords.y } };
@@ -22,4 +23,19 @@ export const rotateFigure = (figure: Figure) => {
     blocks: figure.rotations[rotationIndex],
     rotationIndex,
   };
+};
+
+export const checkCollision = (gameboard: Gameboard, figure: Figure) => {
+  for (let row = figure.coords.y; row < figure.coords.y + figure.blocks.length + 1; row++) {
+    for (let col = figure.coords.x; col <= figure.coords.x + figure.blocks[0].length; col++) {
+      if (
+        (gameboard[row]?.[col] === 1 && figure.blocks[row - figure.coords.y]?.[col - figure.coords.x] === 1) ||
+        (gameboard[row] === undefined && figure.blocks[row - figure.coords.y]?.[col - figure.coords.x] === 1) ||
+        (gameboard[row]?.[col] === undefined && figure.blocks[row - figure.coords.y]?.[col - figure.coords.x] === 1)
+      ) {
+        return true;
+      }
+    }
+  }
+  return false;
 };
