@@ -19,7 +19,6 @@ export const rotateFigure = (figure: Figure) => {
   return {
     coords: figure.coords,
     rotations: figure.rotations,
-    isFixed: figure.isFixed,
     blocks: figure.rotations[rotationIndex],
     rotationIndex,
   };

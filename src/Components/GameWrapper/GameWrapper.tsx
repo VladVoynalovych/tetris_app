@@ -10,6 +10,8 @@ import {
   moveFigureRight,
   rotateFigure,
 } from '../../Controller/MoveController';
+import { calculateScore, calculateLevel, calculateSpeed } from '../../Controller/GameController';
+import { POINT_PER_FIGURE, POINTS_PER_LINE } from '../../utils/Constants';
 
 const emptyPlayground = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -35,29 +37,51 @@ const emptyPlayground = [
 ];
 
 export const GameWrapper = () => {
-  const [{ figure, playground }, setGameState] = useState(() => ({
+  const [{ figure, playground, score, level, rowsDeleted, speed }, setGameState] = useState(() => ({
     figure: getRandomFigure(),
     playground: emptyPlayground,
+    score: 0,
+    level: 1,
+    rowsDeleted: 0,
+    speed: calculateSpeed(1),
   }));
 
   const moveDown = () => {
-    setGameState(({ figure, playground }) => {
+    setGameState(({ figure, playground, score, level, rowsDeleted, speed }) => {
       if (!checkCollision(playground, moveFigureDown(figure))) {
-        return { figure: moveFigureDown(figure), playground };
+        return { figure: moveFigureDown(figure), playground, score, level, rowsDeleted, speed };
       } else {
         let updatedPlayground = setupFigure(playground, figure);
-        updatedPlayground = deleteFilledRows(updatedPlayground);
-        return { figure: getRandomFigure(), playground: updatedPlayground };
+        let removalResult = deleteFilledRows(updatedPlayground);
+        let newScore =
+          removalResult.deletedRowsCount > 0
+            ? calculateScore(score, removalResult.deletedRowsCount * POINTS_PER_LINE)
+            : calculateScore(score, POINT_PER_FIGURE);
+        let newLevel =
+          rowsDeleted + removalResult.deletedRowsCount === rowsDeleted
+            ? level
+            : calculateLevel(rowsDeleted + removalResult.deletedRowsCount, level);
+
+        updatedPlayground = removalResult.gameBoard;
+
+        return {
+          figure: getRandomFigure(),
+          playground: updatedPlayground,
+          score: newScore,
+          level: newLevel,
+          rowsDeleted: rowsDeleted + removalResult.deletedRowsCount,
+          speed: calculateSpeed(newLevel),
+        };
       }
     });
   };
 
   useEffect(() => {
-    const gameLoopId = setInterval(moveDown, 500);
+    const gameLoopId = setInterval(moveDown, speed);
     return () => {
       clearInterval(gameLoopId);
     };
-  }, []);
+  }, [speed]);
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -106,7 +130,7 @@ export const GameWrapper = () => {
 
       <div className='wrapper'>
         <Playground playfield={playground} figure={figure} />
-        <InfoPanel />
+        <InfoPanel score={score} level={level} rowsDeleted={rowsDeleted} />
       </div>
     </div>
   );
