@@ -8,7 +8,6 @@ export type Figure = {
     x: number;
     y: number;
   };
-  isFixed: boolean;
   blocks: readonly (readonly number[])[];
   rotations: readonly (readonly (readonly number[])[])[];
   rotationIndex: number;
@@ -20,7 +19,6 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
       x: 3,
       y: -1,
     },
-    isFixed: false,
     rotationIndex: 0,
     get blocks() {
       return this.rotations[this.rotationIndex];
@@ -45,7 +43,6 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
       x: 4,
       y: -1,
     },
-    isFixed: false,
     rotationIndex: 0,
     get blocks() {
       return this.rotations[this.rotationIndex];
@@ -62,7 +59,6 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
       x: 4,
       y: -1,
     },
-    isFixed: false,
     rotationIndex: 0,
     get blocks() {
       return this.rotations[this.rotationIndex];
@@ -95,7 +91,6 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
       x: 4,
       y: -1,
     },
-    isFixed: false,
     rotationIndex: 0,
     get blocks() {
       return this.rotations[this.rotationIndex];
@@ -128,7 +123,6 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
       x: 4,
       y: -1,
     },
-    isFixed: false,
     rotationIndex: 0,
     get blocks() {
       return this.rotations[this.rotationIndex];
@@ -161,7 +155,6 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
       x: 4,
       y: -1,
     },
-    isFixed: false,
     rotationIndex: 0,
     get blocks() {
       return this.rotations[this.rotationIndex];
@@ -184,7 +177,6 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
       x: 4,
       y: -1,
     },
-    isFixed: false,
     rotationIndex: 0,
     get blocks() {
       return this.rotations[this.rotationIndex];
@@ -209,7 +201,7 @@ const randomizer = () => {
 
 export const getRandomFigure = () => {
   const figureIndex = randomizer();
-  const figureSymbol = FIGURE_ALPHABET[figureIndex];
+  const figureSymbol = FIGURE_ALPHABET[1];
 
   return FIGURES[figureSymbol];
 };
@@ -240,13 +232,18 @@ const isRowFilled = (row: number[]) => {
 
 export const deleteFilledRows = (gameBoard: number[][]) => {
   let updatedGameBoard = copyGameBoard(gameBoard);
+  let deletedRowsCount = 0;
 
   for (let row = 0; row < PLAYGROUND_HEIGHT; row++) {
     if (isRowFilled(gameBoard[row])) {
       updatedGameBoard.splice(row, 1);
       updatedGameBoard.unshift(new Array(PLAYGROUND_WIDTH).fill(0));
+      deletedRowsCount += 1;
     }
   }
 
-  return updatedGameBoard;
+  return {
+    gameBoard: updatedGameBoard,
+    deletedRowsCount,
+  };
 };
