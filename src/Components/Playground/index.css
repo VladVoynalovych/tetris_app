@@ -1,9 +1,10 @@
 .playground {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   width: 230px;
-  height: 449px;
+  height: 410px;
   border: 2px solid #000;
   padding: 3px 3px 3px 3px;
   background: #9ead86;

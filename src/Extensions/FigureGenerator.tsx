@@ -4,6 +4,7 @@ const FIGURE_ALPHABET = ['I', 'O', 'T', 'J', 'L', 'S', 'Z'] as const;
 type FigureLetter = (typeof FIGURE_ALPHABET)[number];
 
 export type Figure = {
+  name: string;
   coords: {
     x: number;
     y: number;
@@ -13,8 +14,29 @@ export type Figure = {
   rotationIndex: number;
 };
 
+export const EMPTY_FIGURE: Figure = {
+  name: 'EMPTY_FIGURE',
+  coords: {
+    x: 0,
+    y: 0,
+  },
+  get blocks() {
+    return this.rotations[this.rotationIndex];
+  },
+  rotations: [
+    [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+  ],
+  rotationIndex: 0,
+};
+
 const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
   I: {
+    name: 'I',
     coords: {
       x: 3,
       y: -1,
@@ -39,6 +61,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
     ],
   },
   O: {
+    name: 'O',
     coords: {
       x: 4,
       y: -1,
@@ -55,6 +78,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
     ],
   },
   T: {
+    name: 'T',
     coords: {
       x: 4,
       y: -1,
@@ -87,6 +111,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
     ],
   },
   J: {
+    name: 'J',
     coords: {
       x: 4,
       y: -1,
@@ -119,6 +144,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
     ],
   },
   L: {
+    name: 'L',
     coords: {
       x: 4,
       y: -1,
@@ -151,6 +177,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
     ],
   },
   S: {
+    name: 'S',
     coords: {
       x: 4,
       y: -1,
@@ -173,6 +200,7 @@ const FIGURES: Record<FigureLetter, Readonly<Figure>> = {
     ],
   },
   Z: {
+    name: 'Z',
     coords: {
       x: 4,
       y: -1,
@@ -201,7 +229,7 @@ const randomizer = () => {
 
 export const getRandomFigure = () => {
   const figureIndex = randomizer();
-  const figureSymbol = FIGURE_ALPHABET[1];
+  const figureSymbol = FIGURE_ALPHABET[figureIndex];
 
   return FIGURES[figureSymbol];
 };
