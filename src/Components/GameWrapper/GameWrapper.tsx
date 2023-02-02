@@ -1,8 +1,9 @@
 import './index.css';
 import { Playground } from '../Playground/Playground';
 import { InfoPanel } from '../InfoPanel/InfoPanel';
+
 import { useEffect, useState } from 'react';
-import { deleteFilledRows, getRandomFigure, setupFigure } from '../../Extensions/FigureGenerator';
+import { deleteFilledRows, getRandomFigure, setupFigure, EMPTY_FIGURE } from '../../Extensions/FigureGenerator';
 import {
   checkCollision,
   moveFigureDown,
@@ -10,46 +11,26 @@ import {
   moveFigureRight,
   rotateFigure,
 } from '../../Controller/MoveController';
-import { calculateScore, calculateLevel, calculateSpeed } from '../../Controller/GameController';
-import { POINT_PER_FIGURE, POINTS_PER_LINE } from '../../utils/Constants';
+import { calculateScore, calculateLevel, calculateSpeed, GameStatus } from '../../Controller/GameController';
+import { PLAYGROUND_HEIGHT, PLAYGROUND_WIDTH, POINT_PER_FIGURE, POINTS_PER_LINE } from '../../utils/Constants';
 
-const emptyPlayground = [
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-];
+const initialState = {
+  figure: EMPTY_FIGURE,
+  playground: new Array(PLAYGROUND_HEIGHT).fill(new Array(PLAYGROUND_WIDTH).fill(0)),
+  score: 0,
+  level: 1,
+  rowsDeleted: 0,
+  speed: calculateSpeed(1),
+  gameStatus: 'initial' as GameStatus,
+};
 
 export const GameWrapper = () => {
-  const [{ figure, playground, score, level, rowsDeleted, speed }, setGameState] = useState(() => ({
-    figure: getRandomFigure(),
-    playground: emptyPlayground,
-    score: 0,
-    level: 1,
-    rowsDeleted: 0,
-    speed: calculateSpeed(1),
-  }));
+  const [{ figure, playground, score, level, rowsDeleted, speed, gameStatus }, setGameState] = useState(initialState);
 
   const moveDown = () => {
-    setGameState(({ figure, playground, score, level, rowsDeleted, speed }) => {
+    setGameState(({ figure, playground, score, level, rowsDeleted, speed, gameStatus }) => {
       if (!checkCollision(playground, moveFigureDown(figure))) {
-        return { figure: moveFigureDown(figure), playground, score, level, rowsDeleted, speed };
+        return { figure: moveFigureDown(figure), playground, score, level, rowsDeleted, speed, gameStatus };
       } else {
         let updatedPlayground = setupFigure(playground, figure);
         let removalResult = deleteFilledRows(updatedPlayground);
@@ -64,24 +45,40 @@ export const GameWrapper = () => {
 
         updatedPlayground = removalResult.gameBoard;
 
-        return {
-          figure: getRandomFigure(),
-          playground: updatedPlayground,
-          score: newScore,
-          level: newLevel,
-          rowsDeleted: rowsDeleted + removalResult.deletedRowsCount,
-          speed: calculateSpeed(newLevel),
-        };
+        let newFigure = getRandomFigure();
+
+        if (!checkCollision(playground, { ...newFigure, coords: { x: newFigure.coords.x, y: 2 } })) {
+          return {
+            figure: newFigure,
+            playground: updatedPlayground,
+            score: newScore,
+            level: newLevel,
+            rowsDeleted: rowsDeleted + removalResult.deletedRowsCount,
+            speed: calculateSpeed(newLevel),
+            gameStatus,
+          };
+        } else {
+          return {
+            figure,
+            playground,
+            score,
+            level,
+            rowsDeleted,
+            speed,
+            gameStatus: 'gameOver',
+          };
+        }
       }
     });
   };
 
   useEffect(() => {
-    const gameLoopId = setInterval(moveDown, speed);
+    if (gameStatus !== 'playing') return;
+    const intervalId = setInterval(moveDown, speed);
     return () => {
-      clearInterval(gameLoopId);
+      clearInterval(intervalId);
     };
-  }, [speed]);
+  }, [gameStatus, speed]);
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -114,6 +111,33 @@ export const GameWrapper = () => {
             return gameState;
           });
           break;
+        case 'KeyP':
+          setGameState((gameState) => {
+            switch (gameState.gameStatus) {
+              case 'playing':
+                return { ...gameState, gameStatus: 'pause' };
+              case 'initial':
+                return { ...gameState, gameStatus: 'playing', figure: getRandomFigure() };
+              default:
+                return { ...gameState, gameStatus: 'playing' };
+            }
+          });
+          break;
+        case 'Enter':
+          setGameState((gameState) => {
+            if (gameState.gameStatus === 'gameOver') {
+              return {
+                ...initialState,
+                gameStatus: 'playing',
+              };
+            } else {
+              return gameState;
+            }
+          });
+          break;
+        case 'KeyR':
+          setGameState(initialState);
+          break;
       }
     };
 
@@ -129,7 +153,7 @@ export const GameWrapper = () => {
       <h1>TETRIS</h1>
 
       <div className='wrapper'>
-        <Playground playfield={playground} figure={figure} />
+        <Playground playfield={playground} figure={figure} gameStatus={gameStatus} />
         <InfoPanel score={score} level={level} rowsDeleted={rowsDeleted} />
       </div>
     </div>

@@ -17,6 +17,7 @@ export const rotateFigure = (figure: Figure) => {
   const rotationIndex = (figure.rotationIndex + 1) % figure.rotations.length;
 
   return {
+    name: figure.name,
     coords: figure.coords,
     rotations: figure.rotations,
     blocks: figure.rotations[rotationIndex],
