@@ -1,5 +1,8 @@
 name: Build and Deploy React to Github Pages
 
+permissions:
+  contents: write
+
 on:
   push:
     branches: [ main ]
@@ -21,6 +24,5 @@ jobs:
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
-          GITHUB_TOKEN: ${{ secrets.PUBLISH_TETRIS }}
           branch: gh-pages # The branch the action should deploy to.
           folder: build # The folder the action should deploy.
