@@ -11,7 +11,7 @@ import {
   moveFigureRight,
   rotateFigure,
 } from '../../Controller/MoveController';
-import { calculateScore, calculateLevel, calculateSpeed } from '../../Controller/GameController';
+import { calculateScore, calculateLevel, calculateSpeed, GameStatus } from '../../Controller/GameController';
 import { PLAYGROUND_HEIGHT, PLAYGROUND_WIDTH, POINT_PER_FIGURE, POINTS_PER_LINE } from '../../utils/Constants';
 
 const initialState = {
@@ -21,23 +21,11 @@ const initialState = {
   level: 1,
   rowsDeleted: 0,
   speed: calculateSpeed(1),
-  gameStatus: 'initial',
+  gameStatus: 'initial' as GameStatus,
 };
 
 export const GameWrapper = () => {
-  const [{ figure, playground, score, level, rowsDeleted, speed, gameStatus }, setGameState] = useState(
-    () => initialState
-  );
-
-  const startGame = () => {
-    setGameState(({ figure, playground, score, level, rowsDeleted, speed, gameStatus }) => {
-      if (figure.name === 'EMPTY_FIGURE') {
-        return { figure: getRandomFigure(), playground, score, level, rowsDeleted, speed, gameStatus };
-      } else {
-        return { figure, playground, score, level, rowsDeleted, speed, gameStatus };
-      }
-    });
-  };
+  const [{ figure, playground, score, level, rowsDeleted, speed, gameStatus }, setGameState] = useState(initialState);
 
   const moveDown = () => {
     setGameState(({ figure, playground, score, level, rowsDeleted, speed, gameStatus }) => {
@@ -85,16 +73,10 @@ export const GameWrapper = () => {
   };
 
   useEffect(() => {
-    let gameLoopId: NodeJS.Timer;
-    switch (gameStatus) {
-      case 'playing':
-        startGame();
-        gameLoopId = setInterval(moveDown, speed);
-        break;
-    }
-
+    if (gameStatus !== 'playing') return;
+    const intervalId = setInterval(moveDown, speed);
     return () => {
-      clearInterval(gameLoopId);
+      clearInterval(intervalId);
     };
   }, [gameStatus, speed]);
 
@@ -131,9 +113,14 @@ export const GameWrapper = () => {
           break;
         case 'KeyP':
           setGameState((gameState) => {
-            return gameState.gameStatus === 'playing'
-              ? { ...gameState, gameStatus: 'paused' }
-              : { ...gameState, gameStatus: 'playing' };
+            switch (gameState.gameStatus) {
+              case 'playing':
+                return { ...gameState, gameStatus: 'pause' };
+              case 'initial':
+                return { ...gameState, gameStatus: 'playing', figure: getRandomFigure() };
+              default:
+                return { ...gameState, gameStatus: 'playing' };
+            }
           });
           break;
         case 'Enter':

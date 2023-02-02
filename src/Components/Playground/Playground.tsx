@@ -31,7 +31,7 @@ export const Playground = ({ playfield, figure, gameStatus }: PropType) => {
           );
         })}
       </div>
-      {gameStatus === 'paused' && <PauseModal />}
+      {gameStatus === 'pause' && <PauseModal />}
       {gameStatus === 'gameOver' && <GameOverModal />}
       {gameStatus === 'initial' && <InitialModal />}
     </div>

@@ -1,7 +1,6 @@
 import { LEVEL_UP_ROW_COUNT, MAX_LEVEL } from '../utils/Constants';
 
-const GAME_STATUSES = ['initial', 'pause', 'playing', 'gameOver'];
-export type GameStatus = (typeof GAME_STATUSES)[number];
+export type GameStatus = 'initial' | 'pause' | 'playing' | 'gameOver';
 
 export const calculateScore = (currentScore: number, points: number) => {
   return currentScore + points;
