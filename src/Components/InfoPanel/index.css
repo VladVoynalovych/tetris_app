@@ -4,7 +4,7 @@
   font-size: 10px;
 }
 
-.info-panel > div {
+.info-panel > * {
   margin-left: 30px;
   margin-bottom: 5px;
 }

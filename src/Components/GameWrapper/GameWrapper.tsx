@@ -47,7 +47,7 @@ export const GameWrapper = () => {
 
         let newFigure = getRandomFigure();
 
-        if (!checkCollision(playground, { ...newFigure, coords: { x: newFigure.coords.x, y: 2 } })) {
+        if (!checkCollision(playground, { ...newFigure, coords: { x: newFigure.coords.x, y: 0 } })) {
           return {
             figure: newFigure,
             playground: updatedPlayground,
@@ -59,8 +59,8 @@ export const GameWrapper = () => {
           };
         } else {
           return {
-            figure,
-            playground,
+            figure: EMPTY_FIGURE,
+            playground: updatedPlayground,
             score,
             level,
             rowsDeleted,
@@ -128,6 +128,7 @@ export const GameWrapper = () => {
             if (gameState.gameStatus === 'gameOver') {
               return {
                 ...initialState,
+                figure: getRandomFigure(),
                 gameStatus: 'playing',
               };
             } else {

@@ -1,0 +1,8 @@
+.camera-control {
+  margin-top: 10px;
+}
+
+.stream-video {
+  width: 100%;
+  transform: rotateY(180deg);
+}
