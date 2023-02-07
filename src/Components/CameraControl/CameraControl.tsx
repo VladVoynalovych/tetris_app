@@ -1,5 +1,5 @@
 import './index.css';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, RefObject } from 'react';
 
 import * as handPoseDetection from '@tensorflow-models/hand-pose-detection';
 import '@tensorflow/tfjs-core';
@@ -8,6 +8,7 @@ import '@tensorflow/tfjs-backend-webgl';
 import '@mediapipe/hands';
 import { HandDetector } from '@tensorflow-models/hand-pose-detection';
 import { getFingerGesture } from '../../Controller/GestureController';
+import { fromPixelsAsync } from '@tensorflow/tfjs-core/dist/ops/browser';
 
 const MODEL = handPoseDetection.SupportedModels.MediaPipeHands;
 const DETECTOR_CONFIG: handPoseDetection.MediaPipeHandsMediaPipeModelConfig = {
@@ -18,21 +19,10 @@ const DETECTOR_CONFIG: handPoseDetection.MediaPipeHandsMediaPipeModelConfig = {
 };
 const detectorCreator = handPoseDetection.createDetector(MODEL, DETECTOR_CONFIG);
 
-type CameraControlType = {
-  controls: {
-    arrowRight: () => void;
-    arrowLeft: () => void;
-    arrowUp: () => void;
-    arrowDown: () => void;
-  };
-};
-
-export const CameraControl = ({ controls }: CameraControlType) => {
+const useCameraControl = ({ controls, videoRef }: CameraControlType & { videoRef: RefObject<HTMLVideoElement> }) => {
   const { arrowDown, arrowUp, arrowLeft, arrowRight } = controls;
   const [mediaStream, setMediaStream] = useState<MediaStream>();
   const [detector, setDetector] = useState<HandDetector>();
-
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const initCamera = async () => {
@@ -63,9 +53,10 @@ export const CameraControl = ({ controls }: CameraControlType) => {
   }, [mediaStream]);
 
   useEffect(() => {
+    const handDetectionCondition = videoRef.current !== null && detector !== undefined && mediaStream;
     const getHands = async () => {
-      if (videoRef.current !== null && detector !== undefined && mediaStream) {
-        let hands = await detector.estimateHands(videoRef.current, { flipHorizontal: false });
+      if (handDetectionCondition) {
+        let hands = await detector.estimateHands(await fromPixelsAsync(videoRef.current), { flipHorizontal: false });
         if (!hands[0]) return;
 
         const indexFingerTip = hands[0].keypoints[8];
@@ -92,11 +83,29 @@ export const CameraControl = ({ controls }: CameraControlType) => {
       }
     };
 
-    let interval = setInterval(getHands, 100);
+    let interval: NodeJS.Timer;
+    if (handDetectionCondition) {
+      interval = setInterval(getHands, 100);
+    }
     return () => {
       clearInterval(interval);
     };
   }, [detector, mediaStream, arrowUp, arrowLeft, arrowRight, arrowDown]);
+};
+
+type CameraControlType = {
+  controls: {
+    arrowRight: () => void;
+    arrowLeft: () => void;
+    arrowUp: () => void;
+    arrowDown: () => void;
+  };
+};
+
+export const CameraControl = ({ controls }: CameraControlType) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useCameraControl({ controls, videoRef });
 
   return (
     <div className='camera-control'>
