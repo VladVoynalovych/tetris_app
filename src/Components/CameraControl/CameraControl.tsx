@@ -7,6 +7,7 @@ import '@tensorflow/tfjs-core';
 import '@tensorflow/tfjs-backend-webgl';
 import '@mediapipe/hands';
 import { HandDetector } from '@tensorflow-models/hand-pose-detection';
+import { getFingerGesture } from '../../Controller/GestureController';
 
 const MODEL = handPoseDetection.SupportedModels.MediaPipeHands;
 const DETECTOR_CONFIG: handPoseDetection.MediaPipeHandsMediaPipeModelConfig = {
@@ -17,10 +18,19 @@ const DETECTOR_CONFIG: handPoseDetection.MediaPipeHandsMediaPipeModelConfig = {
 };
 const detectorCreator = handPoseDetection.createDetector(MODEL, DETECTOR_CONFIG);
 
-export const CameraControl = () => {
+type CameraControlType = {
+  controls: {
+    arrowRight: () => void;
+    arrowLeft: () => void;
+    arrowUp: () => void;
+    arrowDown: () => void;
+  };
+};
+
+export const CameraControl = ({ controls }: CameraControlType) => {
+  const { arrowDown, arrowUp, arrowLeft, arrowRight } = controls;
   const [mediaStream, setMediaStream] = useState<MediaStream>();
   const [detector, setDetector] = useState<HandDetector>();
-  const [coords, setCoords] = useState({ x: 0, y: 0 });
 
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -35,6 +45,17 @@ export const CameraControl = () => {
 
     initCamera();
     detectorInitializer();
+
+    return () => {
+      setMediaStream((stream) => {
+        const tracks = stream?.getTracks();
+        tracks?.forEach((track) => {
+          track.stop();
+        });
+
+        return undefined;
+      });
+    };
   }, []);
 
   useEffect(() => {
@@ -43,32 +64,31 @@ export const CameraControl = () => {
 
   useEffect(() => {
     const getHands = async () => {
-      if (videoRef.current !== null && detector !== undefined) {
+      if (videoRef.current !== null && detector !== undefined && mediaStream) {
         let hands = await detector.estimateHands(videoRef.current, { flipHorizontal: false });
-        const fingerCoords = hands[0]?.keypoints?.[8];
-        console.log(fingerCoords);
+        if (!hands[0]) return;
 
-        // setCoords(({ x, y }) => {
-        //   if (x !== 0 && y !== 0) {
-        //     if (
-        //       x - fingerCoords.x > 50 &&
-        //       x - fingerCoords.x > 0 &&
-        //       y - fingerCoords.y < 50 &&
-        //       y - fingerCoords.y > -50
-        //     ) {
-        //       console.log('right');
-        //       return {
-        //         x: fingerCoords.x,
-        //         y,
-        //       };
-        //     }
-        //   }
-        //
-        //   return {
-        //     x,
-        //     y,
-        //   };
-        // });
+        const indexFingerTip = hands[0].keypoints[8];
+        const indexFingerMCP = hands[0].keypoints[5];
+
+        const direction = getFingerGesture(indexFingerTip, indexFingerMCP);
+
+        if (direction !== null) {
+          switch (direction) {
+            case 'ArrowDown':
+              arrowDown();
+              break;
+            case 'ArrowUp':
+              arrowUp();
+              break;
+            case 'ArrowLeft':
+              arrowLeft();
+              break;
+            case 'ArrowRight':
+              arrowRight();
+              break;
+          }
+        }
       }
     };
 
@@ -76,7 +96,7 @@ export const CameraControl = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [detector]);
+  }, [detector, mediaStream, arrowUp, arrowLeft, arrowRight, arrowDown]);
 
   return (
     <div className='camera-control'>
