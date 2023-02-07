@@ -50,7 +50,7 @@ const useCameraControl = ({ controls, videoRef }: CameraControlType & { videoRef
 
   useEffect(() => {
     if (videoRef.current) videoRef.current.srcObject = mediaStream ?? null;
-  }, [mediaStream]);
+  }, [mediaStream, videoRef]);
 
   useEffect(() => {
     const handDetectionCondition = videoRef.current !== null && detector !== undefined && mediaStream;
@@ -90,7 +90,7 @@ const useCameraControl = ({ controls, videoRef }: CameraControlType & { videoRef
     return () => {
       clearInterval(interval);
     };
-  }, [detector, mediaStream, arrowUp, arrowLeft, arrowRight, arrowDown]);
+  }, [detector, mediaStream, arrowUp, arrowLeft, arrowRight, arrowDown, videoRef]);
 };
 
 type CameraControlType = {
