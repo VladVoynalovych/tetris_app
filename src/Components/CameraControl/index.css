@@ -4,5 +4,6 @@
 
 .stream-video {
   width: 100%;
+  margin-left: 30px;
   transform: rotateY(180deg);
 }

@@ -13,6 +13,7 @@ import {
 } from '../../Controller/MoveController';
 import { calculateScore, calculateLevel, calculateSpeed, GameStatus } from '../../Controller/GameController';
 import { PLAYGROUND_HEIGHT, PLAYGROUND_WIDTH, POINT_PER_FIGURE, POINTS_PER_LINE } from '../../utils/Constants';
+import { CameraControl } from '../CameraControl/CameraControl';
 
 const initialState = {
   figure: EMPTY_FIGURE,
@@ -26,6 +27,38 @@ const initialState = {
 
 export const GameWrapper = () => {
   const [{ figure, playground, score, level, rowsDeleted, speed, gameStatus }, setGameState] = useState(initialState);
+  const [isCameraVisible, setCameraVisibility] = useState(false);
+
+  const changeCameraVisibility = () => {
+    setCameraVisibility((visibility) => !visibility);
+  };
+
+  const arrowRight = () => {
+    setGameState((gameState) => {
+      if (!checkCollision(gameState.playground, moveFigureRight(gameState.figure))) {
+        return { ...gameState, figure: moveFigureRight(gameState.figure) };
+      }
+      return gameState;
+    });
+  };
+
+  const arrowLeft = () => {
+    setGameState((gameState) => {
+      if (!checkCollision(gameState.playground, moveFigureLeft(gameState.figure))) {
+        return { ...gameState, figure: moveFigureLeft(gameState.figure) };
+      }
+      return gameState;
+    });
+  };
+
+  const arrowUp = () => {
+    setGameState((gameState) => {
+      if (!checkCollision(gameState.playground, rotateFigure(gameState.figure))) {
+        return { ...gameState, figure: rotateFigure(gameState.figure) };
+      }
+      return gameState;
+    });
+  };
 
   const moveDown = () => {
     setGameState(({ figure, playground, score, level, rowsDeleted, speed, gameStatus }) => {
@@ -70,6 +103,13 @@ export const GameWrapper = () => {
         }
       }
     });
+  };
+
+  const controls = {
+    arrowRight,
+    arrowLeft,
+    arrowUp,
+    arrowDown: moveDown,
   };
 
   useEffect(() => {
@@ -155,7 +195,16 @@ export const GameWrapper = () => {
 
       <div className='wrapper'>
         <Playground playfield={playground} figure={figure} gameStatus={gameStatus} />
-        <InfoPanel score={score} level={level} rowsDeleted={rowsDeleted} />
+
+        <aside>
+          <InfoPanel score={score} level={level} rowsDeleted={rowsDeleted} />
+          <label>
+            <span>Is camera Enabled: </span>
+            <input type='checkbox' checked={isCameraVisible} onChange={changeCameraVisibility} />
+          </label>
+
+          {isCameraVisible && <CameraControl controls={controls} />}
+        </aside>
       </div>
     </div>
   );
