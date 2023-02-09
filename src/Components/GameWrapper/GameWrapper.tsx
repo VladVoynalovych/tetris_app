@@ -11,8 +11,14 @@ import {
   moveFigureRight,
   rotateFigure,
 } from '../../Controller/MoveController';
-import { calculateScore, calculateLevel, calculateSpeed, GameStatus } from '../../Controller/GameController';
-import { PLAYGROUND_HEIGHT, PLAYGROUND_WIDTH, POINT_PER_FIGURE, POINTS_PER_LINE } from '../../utils/Constants';
+import {
+  calculateScore,
+  calculateLevel,
+  calculateSpeed,
+  GameStatus,
+  calculatePoints,
+} from '../../Controller/GameController';
+import { PLAYGROUND_HEIGHT, PLAYGROUND_WIDTH, POINT_PER_FIGURE } from '../../utils/Constants';
 import { CameraControl } from '../CameraControl/CameraControl';
 
 const initialState = {
@@ -69,7 +75,7 @@ export const GameWrapper = () => {
         let removalResult = deleteFilledRows(updatedPlayground);
         let newScore =
           removalResult.deletedRowsCount > 0
-            ? calculateScore(score, removalResult.deletedRowsCount * POINTS_PER_LINE)
+            ? calculateScore(score, calculatePoints(removalResult.deletedRowsCount)) + POINT_PER_FIGURE
             : calculateScore(score, POINT_PER_FIGURE);
         let newLevel =
           rowsDeleted + removalResult.deletedRowsCount === rowsDeleted
