@@ -1,4 +1,4 @@
-import { LEVEL_UP_ROW_COUNT, MAX_LEVEL, POINTS_PER_LINE } from '../utils/Constants';
+import { LEVEL_UP_ROW_COUNT, MAX_LEVEL } from '../utils/Constants';
 
 export type GameStatus = 'initial' | 'pause' | 'playing' | 'gameOver';
 
@@ -7,7 +7,7 @@ export const calculateScore = (currentScore: number, points: number) => {
 };
 
 export const calculatePoints = (rowsDeleted: number): number => {
-  return POINTS_PER_LINE.get(rowsDeleted);
+  return [0, 100, 300, 700, 1500][rowsDeleted];
 };
 
 export const calculateLevel = (rowsDeleted: number, currentLevel: number) => {
