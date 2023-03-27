@@ -118,6 +118,8 @@ export const GameWrapper = () => {
     arrowDown: moveDown,
   };
 
+  console.log('');
+
   useEffect(() => {
     if (gameStatus !== 'playing') return;
     const intervalId = setInterval(moveDown, speed);
